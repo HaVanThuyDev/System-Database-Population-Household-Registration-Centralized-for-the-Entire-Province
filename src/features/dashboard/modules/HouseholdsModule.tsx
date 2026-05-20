@@ -1,0 +1,86 @@
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Platform, Dimensions } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { Colors } from '../../../theme/colors';
+
+const HOUSEHOLDS = [
+  { code: 'HK-10029', head: 'Trần Văn Hoàng',  members: 4, address: 'Số 12, Đường 3/2, P.1, TP. Trung Tâm', type: 'Thường trú', status: 'Hoàn chỉnh' },
+  { code: 'HK-10030', head: 'Nguyễn Thị Lan',  members: 3, address: 'Hẻm 45, Xã Hòa Xuân, H. Hòa Bình',    type: 'Thường trú', status: 'Cần cập nhật' },
+  { code: 'HK-10031', head: 'Lê Văn Minh',     members: 6, address: 'Thôn 2, Xã Bình Minh, H. Miền Núi',   type: 'Thường trú', status: 'Hoàn chỉnh' },
+  { code: 'HK-10032', head: 'Phạm Thị Hương',  members: 2, address: 'Số 88, Đường Lê Lợi, P.3, TP. Trung Tâm', type: 'Tạm trú', status: 'Chờ duyệt' },
+];
+
+const isWeb = Platform.OS === 'web';
+const { width: screenWidth } = Dimensions.get('window');
+const isDesktop = isWeb && screenWidth >= 1024;
+
+const HouseholdsModule: React.FC = () => {
+  const navigation = useNavigation<any>();
+  return (
+    <View style={styles.container}>
+      <View style={styles.toolbar}>
+        <Text style={styles.title}>Danh sách hộ gia đình</Text>
+        <View style={styles.toolbarRight}>
+          <TouchableOpacity style={styles.filterBtn}><Text style={styles.filterText}>🔽 Lọc</Text></TouchableOpacity>
+          <TouchableOpacity style={styles.addBtn} onPress={() => navigation.navigate('AddHousehold')}><Text style={styles.addBtnText}>+ Thêm hộ mới</Text></TouchableOpacity>
+        </View>
+      </View>
+
+      <ScrollView horizontal={!isDesktop} showsHorizontalScrollIndicator={false} style={styles.scrollWrapper}>
+        <View style={[styles.tableCard, !isDesktop && { minWidth: 900 }]}>
+          <View style={styles.tableHead}>
+            {['Mã hộ khẩu', 'Chủ hộ', 'Số nhân khẩu', 'Địa chỉ', 'Loại cư trú', 'Trạng thái', 'Thao tác'].map((h, i) => (
+              <Text key={i} style={[styles.th, i === 3 && { flex: 2 }]}>{h}</Text>
+            ))}
+          </View>
+          {HOUSEHOLDS.map((h, i) => {
+            const statusColor = h.status === 'Hoàn chỉnh' ? '#16a34a' : h.status === 'Cần cập nhật' ? '#d97706' : Colors.primary;
+            const statusBg    = h.status === 'Hoàn chỉnh' ? '#dcfce7' : h.status === 'Cần cập nhật' ? '#fef3c7' : Colors.primaryLight;
+            return (
+              <View key={i} style={[styles.tableRow, i % 2 === 0 && styles.tableRowAlt]}>
+                <Text style={[styles.td, styles.codeText]}>{h.code}</Text>
+                <Text style={[styles.td, styles.boldText]}>{h.head}</Text>
+                <Text style={styles.td}>{h.members} người</Text>
+                <Text style={[styles.td, { flex: 2, fontSize: 14, fontFamily: 'BeVietnamPro-Regular', color: Colors.textSecondary }]} numberOfLines={2}>{h.address}</Text>
+                <Text style={styles.td}>{h.type}</Text>
+                <View style={styles.td}>
+                  <View style={[styles.badge, { backgroundColor: statusBg }]}>
+                    <Text style={[styles.badgeText, { color: statusColor }]}>{h.status}</Text>
+                  </View>
+                </View>
+                <View style={[styles.td, { flexDirection: 'row', gap: 8 }]}>
+                  <TouchableOpacity><Text>👁️</Text></TouchableOpacity>
+                  <TouchableOpacity><Text>✏️</Text></TouchableOpacity>
+                </View>
+              </View>
+            );
+          })}
+        </View>
+      </ScrollView>
+    </View>
+  );
+};
+
+export default HouseholdsModule;
+
+const styles = StyleSheet.create({
+  container  : { gap: 16, paddingBottom: 40 },
+  toolbar    : { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 },
+  title      : { fontSize: 18, fontFamily: 'BeVietnamPro-Bold', color: Colors.primaryDark },
+  toolbarRight: { flexDirection: 'row', gap: 10 },
+  filterBtn  : { paddingHorizontal: 14, paddingVertical: 9, borderWidth: 1, borderColor: Colors.border, borderRadius: 10, backgroundColor: Colors.white },
+  filterText : { fontSize: 15, color: Colors.textSecondary, fontFamily: 'BeVietnamPro-Medium' },
+  addBtn     : { paddingHorizontal: 16, paddingVertical: 10, backgroundColor: Colors.primary, borderRadius: 10 },
+  addBtnText : { fontSize: 15, color: Colors.white, fontFamily: 'BeVietnamPro-SemiBold' },
+  scrollWrapper: { width: '100%', borderRadius: 16 },
+  tableCard  : { backgroundColor: Colors.white, borderRadius: 16, borderWidth: 1, borderColor: Colors.border, overflow: 'hidden' },
+  tableHead  : { flexDirection: 'row', backgroundColor: Colors.bgInput, paddingHorizontal: 16, paddingVertical: 14 },
+  th         : { flex: 1, fontSize: 13, fontFamily: 'BeVietnamPro-Bold', color: Colors.textMuted, textTransform: 'uppercase' },
+  tableRow   : { flexDirection: 'row', paddingHorizontal: 16, paddingVertical: 16, alignItems: 'center', borderTopWidth: 1, borderTopColor: Colors.border },
+  tableRowAlt: { backgroundColor: '#fafafa' },
+  td         : { flex: 1, fontSize: 15, color: Colors.textPrimary, fontFamily: 'BeVietnamPro-Regular' },
+  codeText   : { fontFamily: 'BeVietnamPro-Bold', color: Colors.textPrimary },
+  boldText   : { fontFamily: 'BeVietnamPro-SemiBold' },
+  badge      : { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 20, alignSelf: 'flex-start' },
+  badgeText  : { fontSize: 13, fontFamily: 'BeVietnamPro-Bold' },
+});
