@@ -9,7 +9,7 @@
     "web": "expo start --web",
     "lint": "eslint src --ext .ts,.tsx",
     "type-check": "tsc --noEmit",
-    "build": "npx expo export --platform web"
+    "build": "node node_modules/expo/bin/cli.js export --platform web"
   },
   "dependencies": {
     "@expo/metro-runtime": "~6.1.2",
