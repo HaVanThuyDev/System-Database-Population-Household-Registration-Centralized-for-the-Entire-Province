@@ -2,13 +2,14 @@
   "name": "cudan",
   "version": "1.0.0",
   "private": true,
-  "scripts": {
+"scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
     "web": "expo start --web",
     "lint": "eslint src --ext .ts,.tsx",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "build": "npx expo export --platform web"
   },
   "dependencies": {
     "@expo/metro-runtime": "~6.1.2",
