@@ -19,6 +19,10 @@ jobs:
       - name: Install dependencies
         run: npm install --legacy-peer-deps
 
+      # Bước quan trọng: Ép quyền thực thi cho toàn bộ các file binary trong node_modules
+      - name: Grant permissions to binaries
+        run: chmod -R +x node_modules/.bin
+
       - name: Build
         run: npm run build
 
