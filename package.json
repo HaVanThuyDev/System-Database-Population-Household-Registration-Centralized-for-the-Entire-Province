@@ -2,14 +2,14 @@
   "name": "cudan",
   "version": "1.0.0",
   "private": true,
-"scripts": {
+  "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
     "web": "expo start --web",
     "lint": "eslint src --ext .ts,.tsx",
     "type-check": "tsc --noEmit",
-    "build": "npx expo export --platform web"
+    "build": "expo export:web"
   },
   "dependencies": {
     "@expo/metro-runtime": "~6.1.2",
@@ -34,6 +34,7 @@
     "@babel/core": "^7.20.0",
     "@babel/preset-env": "^7.20.0",
     "@babel/runtime": "^7.20.0",
+    "@expo/webpack-config": "^19.0.1",
     "@react-native/babel-preset": "0.74.83",
     "@react-native/eslint-config": "0.74.83",
     "@react-native/metro-config": "0.74.83",
