@@ -17,9 +17,10 @@ jobs:
           node-version: 20
 
       - name: Install dependencies
-        run: npm install --legacy-peer-deps
-
-      # Bước quan trọng: Ép quyền thực thi cho toàn bộ các file binary trong node_modules
+        run: |
+          rm -f package-lock.json
+          npm install --legacy-peer-deps
+        
       - name: Grant permissions to binaries
         run: chmod -R +x node_modules/.bin
 
