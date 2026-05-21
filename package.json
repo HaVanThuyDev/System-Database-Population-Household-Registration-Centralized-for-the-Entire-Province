@@ -62,6 +62,8 @@
     "metro-cache": "~0.81.0",
     "metro-cache-key": "~0.81.0",
     "metro-config": "~0.81.0",
-    "metro-file-map": "~0.81.0"
+    "metro-file-map": "~0.81.0",
+    "ansi-escapes": "^4.3.2",
+    "terminal-link": "^2.1.1"
   }
 }
