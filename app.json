@@ -4,8 +4,12 @@
     "slug": "fe-cudan",
     "version": "1.0.0",
     "platforms": ["ios", "android", "web"],
+    "icon": "./src/assets/images/logo.png",
     "web": {
-      "bundler": "metro"
+      "bundler": "metro",
+      "favicon": "./src/assets/images/logo.png",
+      "name": "FeCudan",
+      "shortName": "FeCudan"
     }
   }
 }
