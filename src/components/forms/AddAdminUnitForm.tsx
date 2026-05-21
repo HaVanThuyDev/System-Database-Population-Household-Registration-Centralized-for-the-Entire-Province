@@ -53,7 +53,7 @@ const AddAdminUnitForm: React.FC<AddAdminUnitFormProps> = ({ onClose }) => {
         <View style={styles.fieldHalf}>
           <Text style={styles.dropdownLabel}>CẤP ĐƠN VỊ</Text>
           <View style={styles.dropdownContainer}>
-            {['Thành phố', 'Thị xã'].map(item => (
+            {['Thành phố', 'Thị xã', 'Tỉnh'].map(item => (
               <TouchableOpacity
                 key={item}
                 style={[styles.dropdownItem, level === item && styles.dropdownItemActive]}
