@@ -43,9 +43,11 @@
     "@types/react-native": "^0.73.0",
     "@types/react-native-vector-icons": "^6.4.18",
     "babel-plugin-module-resolver": "^5.0.3",
+    "ansi-escapes": "4.3.2",
     "eslint": "^8.19.0",
     "metro-react-native-babel-preset": "^0.77.0",
     "prettier": "2.8.8",
+    "terminal-link": "2.1.1",
     "typescript": "~5.9.2"
   },
   "engines": {
