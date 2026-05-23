@@ -10,9 +10,9 @@ import {
   Animated,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
-import { logout } from '../../store/auth/authSlice';
+import { logout, selectCurrentUser } from '../../store/auth/authSlice';
 import { Colors } from '../../theme/colors';
 import { Feather } from '@expo/vector-icons';
 
@@ -65,8 +65,19 @@ interface DashboardLayoutProps {
 }
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ activeModule, children, customTitle }) => {
-  const dispatch = useDispatch();
+  const dispatch   = useDispatch();
   const navigation = useNavigation<any>();
+  const currentUser = useSelector(selectCurrentUser);
+
+  // Tên hiển thị & chữ viết tắt avatar
+  const displayName = currentUser?.fullName ?? currentUser?.username ?? 'Người dùng';
+  const avatarText  = displayName
+    .split(' ')
+    .filter(Boolean)
+    .slice(-2)
+    .map((w: string) => w[0].toUpperCase())
+    .join('');
+
   const [sidebarOpen, setSidebarOpen] = useState(isDesktop);
   const sidebarAnim = useRef(new Animated.Value(isDesktop ? 1 : 0)).current;
   const [mounted, setMounted] = useState(isDesktop || sidebarOpen);
@@ -218,11 +229,13 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ activeModule, childre
             {/* User info */}
             <View style={styles.sidebarUser}>
               <View style={styles.userAvatar}>
-                <Text style={styles.userAvatarText}>QT</Text>
+                <Text style={styles.userAvatarText}>{avatarText}</Text>
               </View>
               <View style={{ flex: 1 }}>
-                <Text style={styles.userName} numberOfLines={1}>Nguyễn Văn Quản Trị</Text>
-                <Text style={styles.userRole} numberOfLines={1}>Quản trị cấp tỉnh</Text>
+                <Text style={styles.userName} numberOfLines={1}>{displayName}</Text>
+                <Text style={styles.userRole} numberOfLines={1}>
+                  {currentUser?.roles?.includes('ADMIN') ? 'Quản trị viên' : 'Cán bộ'}
+                </Text>
               </View>
               <TouchableOpacity onPress={() => dispatch(logout())} style={styles.logoutBtn}>
                 <Feather name="log-out" size={18} color={Colors.textSecondary} />

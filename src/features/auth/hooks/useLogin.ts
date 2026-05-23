@@ -2,7 +2,6 @@ import { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { UserRole } from '../../../constants/auth.constants';
 import { loginApi } from '../services/auth.service';
-import { LoginRequest } from '../services/auth.types';
 import { loginSuccess } from '../../../store/auth/authSlice';
 
 interface LoginState {
@@ -14,7 +13,7 @@ interface LoginState {
   showModal     : boolean;
   usernameError : string;
   passwordError : string;
-  globalError   : string;
+  errorMessage  : string;   // lỗi hiển thị qua Toast
 }
 
 const INITIAL_STATE: LoginState = {
@@ -26,7 +25,7 @@ const INITIAL_STATE: LoginState = {
   showModal     : false,
   usernameError : '',
   passwordError : '',
-  globalError   : '',
+  errorMessage  : '',
 };
 
 export function useLogin(onSuccess?: () => void) {
@@ -40,7 +39,6 @@ export function useLogin(onSuccess?: () => void) {
       setState(prev => ({ ...prev, [key]: value })),
     [],
   );
-
 
   const validate = (): boolean => {
     let valid = true;
@@ -68,49 +66,49 @@ export function useLogin(onSuccess?: () => void) {
   // ── Submit ───────────────────────────────────────────────
 
   const handleSubmit = useCallback(async () => {
-    set('isLoading', true);
-    set('globalError', '');
+    if (!validate()) return;
 
-    // Giả lập thời gian load 1.5 giây
-    setTimeout(() => {
+    set('isLoading', true);
+    set('errorMessage', '');
+
+    try {
+      const response = await loginApi({
+        username: state.username.trim(),
+        password: state.password,
+        role    : state.role,
+      });
+
+      // Map BE response phẳng → Redux store
+      dispatch(loginSuccess(response));
+      onSuccess?.();
+    } catch (err: any) {
+      // Hiển thị lỗi qua Toast
+      const msg = err?.message ?? 'Đăng nhập thất bại. Vui lòng thử lại.';
+      set('errorMessage', msg);
+    } finally {
       set('isLoading', false);
-      // Dispatch trạng thái login để vào thẳng Dashboard mà không cần validate API
-      dispatch(loginSuccess({
-        accessToken: 'mock-token',
-        refreshToken: 'mock-refresh',
-        expiresIn: 3600,
-        user: {
-          id: '1',
-          username: state.username || 'admin',
-          fullName: 'Nguyễn Văn Quản Trị',
-          role: state.role,
-          unit: 'Tỉnh',
-        }
-      }));
-    }, 1500);
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state, dispatch]);
+  }, [state, dispatch, onSuccess]);
 
   const handleFaceIdLogin = useCallback(async () => {
     set('isLoading', true);
-    set('globalError', '');
 
     setTimeout(() => {
       set('isLoading', false);
       dispatch(loginSuccess({
-        accessToken: 'mock-token-faceid',
+        accessToken : 'mock-token-faceid',
         refreshToken: 'mock-refresh-faceid',
-        expiresIn: 3600,
-        user: {
-          id: '1',
-          username: 'faceid_user',
-          fullName: 'Người dùng Face ID',
-          role: state.role,
-          unit: 'Tỉnh',
-        }
+        tokenType   : 'Bearer',
+        expiresIn   : 3600,
+        userId      : 0,
+        username    : 'faceid_user',
+        fullName    : 'Người dùng Face ID',
+        roles       : ['OFFICER'],
+        authorities : [],
       }));
     }, 1000);
-  }, [state.role, dispatch]);
+  }, [dispatch]);
 
   // ── Modal close → navigate ───────────────────────────────
 
@@ -129,13 +127,14 @@ export function useLogin(onSuccess?: () => void) {
     showModal     : state.showModal,
     usernameError : state.usernameError,
     passwordError : state.passwordError,
-    globalError   : state.globalError,
+    errorMessage  : state.errorMessage,
 
     // Actions
-    setUsername    : (v: string)  => set('username', v),
-    setPassword    : (v: string)  => set('password', v),
-    setRole        : (v: UserRole) => set('role', v),
-    setAgreedToTerms: (v: boolean) => set('agreedToTerms', v),
+    setUsername      : (v: string)   => set('username', v),
+    setPassword      : (v: string)   => set('password', v),
+    setRole          : (v: UserRole) => set('role', v),
+    setAgreedToTerms : (v: boolean)  => set('agreedToTerms', v),
+    clearError       : ()            => set('errorMessage', ''),
     handleSubmit,
     handleFaceIdLogin,
     handleModalClose,

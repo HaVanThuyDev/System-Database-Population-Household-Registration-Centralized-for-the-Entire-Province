@@ -35,7 +35,7 @@ export async function logoutApi(token: string): Promise<void> {
 
 export async function refreshTokenApi(
   refreshToken: string,
-): Promise<Pick<LoginResponse, 'accessToken' | 'expiresIn'>> {
+): Promise<{ accessToken: string; expiresIn: number }> {
   return request(AUTH_ENDPOINTS.REFRESH, {
     method: 'POST',
     body  : { refreshToken },

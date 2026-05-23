@@ -8,7 +8,6 @@ import {
   Platform,
   Image,
   Dimensions,
-  ImageBackground,
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
@@ -21,6 +20,7 @@ import LoginForm from '../components/LoginForm';
 import SecurityModal from '../components/SecurityModal';
 import FaceIDModal from '../components/FaceIDModal';
 import AppButton from '../../../components/common/AppButton';
+import ErrorToast from '../../../components/common/ErrorToast';
 import { loginStyles as S } from '../styles/login.styles';
 
 const { width: windowWidth, height: windowHeight } = Dimensions.get('window');
@@ -48,8 +48,9 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess }) => {
   const {
     username, password, role, agreedToTerms,
     isLoading, showModal,
-    usernameError, passwordError, globalError,
+    usernameError, passwordError, errorMessage,
     setUsername, setPassword, setRole, setAgreedToTerms,
+    clearError,
     handleSubmit, handleFaceIdLogin, handleModalClose,
   } = useLogin(onLoginSuccess);
 
@@ -106,13 +107,6 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess }) => {
                 </View>
 
                 <RoleSelector selected={role} onChange={setRole} />
-
-                {!!globalError && (
-                  <View style={S.globalError}>
-                    <Text>⚠️</Text>
-                    <Text style={S.globalErrorText}>{globalError}</Text>
-                  </View>
-                )}
 
                 <LoginForm
                   username={username}
@@ -177,6 +171,12 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLoginSuccess }) => {
           setShowFaceIdModal(false);
           handleFaceIdLogin();
         }}
+      />
+
+      {/* Toast lỗi đăng nhập – hiện phía trên màn hình */}
+      <ErrorToast
+        message={errorMessage}
+        onDismiss={clearError}
       />
     </View>
   );

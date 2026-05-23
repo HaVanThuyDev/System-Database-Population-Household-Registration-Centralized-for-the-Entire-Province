@@ -8,8 +8,7 @@ const isDesktop = isWeb && SCREEN_W >= 768;
 export const loginStyles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    // Thay Colors.primaryBg thành 'transparent' để nhìn xuyên qua ảnh nền
-    backgroundColor: 'transparent', 
+    backgroundColor: 'transparent',
   },
   scrollContent: {
     flexGrow: 1,
@@ -17,7 +16,7 @@ export const loginStyles = StyleSheet.create({
     alignItems: 'center',
     padding: isDesktop ? 40 : 20,
     // Đảm bảo minHeight chiếm toàn bộ chiều cao trình duyệt trên Web
-    minHeight: isWeb ? ('100vh' as any) : '100%', 
+    minHeight: isWeb ? ('100vh' as any) : '100%',
     backgroundColor: 'transparent', // Đảm bảo lớp này cũng trong suốt
   },
   card: {
@@ -204,11 +203,11 @@ export const loginStyles = StyleSheet.create({
     gap: 6,
   },
   supportIcon: {
-     fontSize: 12,
+    fontSize: 12,
     fontWeight: '700',
     fontFamily: 'BeVietnamPro-Regular',
     color: Colors.textSecondary,
-     },
+  },
   supportText: {
     fontSize: 12,
     fontWeight: '700',
@@ -224,5 +223,5 @@ export const loginStyles = StyleSheet.create({
     width: 60,
     height: 60,
   },
- 
+
 });

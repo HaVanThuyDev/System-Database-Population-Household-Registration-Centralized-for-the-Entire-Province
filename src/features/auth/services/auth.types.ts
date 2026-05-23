@@ -13,22 +13,29 @@ export interface LoginRequest {
   role    : UserRole;
 }
 
-// ── Response ───────────────────────────────────────────────
-
-export interface AuthUser {
-  id          : string;
-  fullName    : string;
-  username    : string;
-  role        : UserRole;
-  unit        : string;   // Đơn vị công tác (tỉnh/huyện/xã)
-  avatarUrl  ?: string;
-}
+// ── Response (khớp với shape BE trả về) ────────────────────
+// BE trả về dạng phẳng, không có nested user object
 
 export interface LoginResponse {
-  accessToken : string;
-  refreshToken: string;
-  expiresIn   : number;  // seconds
-  user        : AuthUser;
+  accessToken  : string;
+  refreshToken : string;
+  tokenType    : string;      // "Bearer"
+  expiresIn    : number;      // seconds
+  userId       : number;
+  username     : string;
+  fullName     : string;
+  authorities  : string[];    // ["USER_DELETE", "USER_CREATE", ...]
+  roles        : string[];    // ["ADMIN"]
+}
+
+// ── AuthUser – shape lưu trong Redux ───────────────────────
+
+export interface AuthUser {
+  userId      : number;
+  username    : string;
+  fullName    : string;
+  roles       : string[];
+  authorities : string[];
 }
 
 // ── Error ──────────────────────────────────────────────────
